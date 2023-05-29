@@ -1,0 +1,59 @@
+---
+title: "Health care expenditure and disease prevelance"
+subtitle: "Data cleaning, Part 1 of Project"
+author: "Tarini Srikanth, Anshuman Komawar, Garret Ravatt"
+format: html
+self-contained: true
+code-tools: true
+toc: true
+editor: source
+execute: 
+  error: true
+  echo: true
+  message: false
+  warning: false
+---
+Reading in data
+```{r}
+healthcare_expenditure = read.csv("government_health_spending_of_total_gov_spending_percent.csv")
+malaria_cases = read.csv("malaria_cases_per_100000_reported.csv")
+
+```
+
+1.1 Data Cleaning
+
+Perform data cleaning as you see fit, making sure that you document each step you perform.
+
+Step 1.2 asks you to pivot your data; it is possible that you will need to perform some data cleaning before pivoting! For example, if some incomes are recorded as 3.6 while others are recorded as "1.1k", R will not allow you to pivot your columns since these columns do not have the same data type! You will need to convert the value of "1.1k" into a number before pivoting.
+
+```{r}
+
+malaria_cases <- malaria_cases |>
+  mutate(across(-country, ~ ifelse(str_detect(., "k$"), as.numeric(str_replace(., "k$", "")), as.numeric(.))))
+
+options(scipen = 999)
+
+```
+
+For the Malaria Cases, 
+We had to use the 'options' package in R to convert it string formatted numbers like 1.1k to 1100.00. 
+Documentation: https://cran.r-project.org/web/packages/Tplyr/vignettes/options.html
+
+For the healthcare expenditure, we didn't have to clean the data. 
+
+1.2 Pivoting Longer
+
+The values of year are spread across multiple columns. For your analysis, you will need to pivot these columns to be in a single column.
+
+```{r}
+
+```
+
+1.3 Joining Datasets
+
+To have both of the variables in the same dataset, you will need to perform a join. The type of join is up to you, but keep in mind that the default in ggplot() and in lm() is to drop all of the NA values before plotting or fitting a regression model.
+
+```{r}
+
+```
+
