@@ -47,6 +47,22 @@ The values of year are spread across multiple columns. For your analysis, you wi
 
 ```{r}
 
+malaria_cases <- malaria_cases |>
+  pivot_longer(cols = starts_with("X"), 
+               names_to = "year",
+               values_to = "cases") |>
+  mutate(year = str_remove(year, "X"))
+
+```
+
+```{r}
+
+healthcare_expenditure <- healthcare_expenditure |>
+  pivot_longer(cols = starts_with("X"), 
+               names_to = "year",
+               values_to = "spending") |>
+  mutate(year = str_remove(year, "X"))
+
 ```
 
 1.3 Joining Datasets
@@ -54,6 +70,7 @@ The values of year are spread across multiple columns. For your analysis, you wi
 To have both of the variables in the same dataset, you will need to perform a join. The type of join is up to you, but keep in mind that the default in ggplot() and in lm() is to drop all of the NA values before plotting or fitting a regression model.
 
 ```{r}
+
 
 ```
 
