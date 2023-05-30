@@ -13,6 +13,11 @@ execute:
   message: false
   warning: false
 ---
+
+```{r setup}
+library(tidyverse)
+```
+
 Reading in data
 ```{r}
 healthcare_expenditure = read.csv("government_health_spending_of_total_gov_spending_percent.csv")
@@ -70,7 +75,7 @@ healthcare_expenditure <- healthcare_expenditure |>
 To have both of the variables in the same dataset, you will need to perform a join. The type of join is up to you, but keep in mind that the default in ggplot() and in lm() is to drop all of the NA values before plotting or fitting a regression model.
 
 ```{r}
-
-
+# 137 entries contain NA values
+data <- healthcare_expenditure |>
+  inner_join(malaria_cases)
 ```
-
