@@ -79,3 +79,28 @@ To have both of the variables in the same dataset, you will need to perform a jo
 data <- healthcare_expenditure |>
   inner_join(malaria_cases)
 ```
+
+
+Written Components:
+Detailed data and variable description.
+
+Malaria Dataset:
+Malaria cases per 100,000 residents that are reported. 
+Data: Country (the country pertaining to the cases), Year (the year the cases were reported in), Cases (reported malaria cases per 100,000 people)
+
+Healthcare Expenditure:
+Government health spending of total government spending percentage. 
+Data: Country(the country pertaining to the spending percentage), Year( the year the spending percentages are from), spending (the percentage of total government spending dedicated to health care)
+
+
+Hypothesized relationship between the variables (and any outside references).
+
+Our hypothesis is that with more government dedication and spending towards healthcare, diseases prevelance would decrease. We are focusing specifically on Malaria as the disease, and we believe that with more government dedication towards healthcare, cases of Malaria should decrease, as treatements and cures would benefit from extra government spending, and diseases would be eradicated faster. 
+
+Discussion of data cleaning process and decisions.
+
+For the healthcare expenditure dataset, we did not have to clean up the data, as all the data was present as numbers that represented percentages  of government spending. 
+
+For the malaria dataset, we did have to clean up the cases varibale, as some were in string formats which we then had to convert to number representations. 
+
+Apart from that, we did not clean the data too much, as we are only focusing on and looking at the cases and spending variables, which we joined into one dataset. 
