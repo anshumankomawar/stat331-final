@@ -104,3 +104,61 @@ For the healthcare expenditure dataset, we did not have to clean up the data, as
 For the malaria dataset, we did have to clean up the cases varibale, as some were in string formats which we then had to convert to number representations. 
 
 Apart from that, we did not clean the data too much, as we are only focusing on and looking at the cases and spending variables, which we joined into one dataset. 
+
+
+Linear Regression
+
+2.1 Data Vizualations
+
+Create two visualizations exploring the following:
+
+1. The relationship between the two quantitative variables you are investigating.
+Remember: your response variable should be on the y-axis and your explanatory variable should be on the x-axis.
+2. How this relationship (from #1) has changed over time.
+
+```{r}
+
+ggplot(data, aes(x = spending, y = cases)) +
+  geom_point() +
+  labs(x = "Healthcare Spending", y = "Malaria Cases") +
+  ggtitle("Relationship between Healthcare Spending and Malaria Cases")
+
+
+```
+
+```{r}
+
+ggplot(data, aes(x = year, y = cases, size = spending)) +
+  geom_point() +
+  labs(x = "Year", y = "Malaria Cases", size = "Healthcare Spending") +
+  ggtitle("Malaria Cases with Healthcare Spending over Time") +
+  scale_size_continuous(name = "Healthcare Spending")
+```
+
+2.2 Linear Regressions
+
+Fit a simple linear regression model for the relationship between the variables you selected. Similar to your visualization, you will need to define which variable is the response (y) and which variable is the explanatory (x). Present the estimated regression model and provide an interpretation for each of the coefficients.
+
+To perform your linear regression, you will likely want to summarize your data so you have one x value and one y value per country. You may do this by averaging (or taking the median) across all years, averaging across a subset of years, or picking a year of particular interest. Make sure you discuss your decision in your written report.
+
+```{r}
+
+```
+
+2.3 Model Fit
+
+The goal of regression is to account for as much variability in the response values as we can. To assess how “good” of a regression model you have, look at how much of the variability in the response was accounted for by your regression.
+
+ The variance in your fitted values represents the amount of variability in the response that was accounted for by the explanatory variable. The variance in the residuals represents the amount of variability in the responses that was not accounted for.
+
+Make a nicely formatted table that presents the following:
+
+The variance in the response values.
+The variance in the fitted values from your regression model.
+The variance in the residuals from your regression model.
+Discuss the proportion of the variability in the response values that was accounted for by your regression model. What does this suggest about the “quality” of your model?
+
+```{r}
+
+```
+
