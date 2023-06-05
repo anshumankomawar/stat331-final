@@ -16,6 +16,7 @@ execute:
 
 ```{r setup}
 library(tidyverse)
+library(kableExtra)
 ```
 
 Reading in data
@@ -176,6 +177,19 @@ The variance in the residuals from your regression model.
 Discuss the proportion of the variability in the response values that was accounted for by your regression model. What does this suggest about the “quality” of your model?
 
 ```{r}
+response_variance <- var(countrywise_data$cases)
+fitted_values <- predict(model)
+fitted_values_variance <- var(fitted_values)
+residuals <- residuals(model)
+residuals_variance <- var(residuals)
+
+variance_table <- data.frame(
+  `Variance Type` = c("Response Values", "Fitted Values", "Residuals"),
+  Variance = c(response_variance, fitted_values_variance, residuals_variance)
+)
+
+variance_table |>
+  kable() |>
+  kable_styling()
 
 ```
-
