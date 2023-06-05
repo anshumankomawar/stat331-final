@@ -34,7 +34,7 @@ Step 1.2 asks you to pivot your data; it is possible that you will need to perfo
 ```{r}
 
 malaria_cases <- malaria_cases |>
-  mutate(across(-country, ~ ifelse(str_detect(., "k$"), as.numeric(str_replace(., "k$", "")), as.numeric(.))))
+  mutate(across(-country, ~ ifelse(str_detect(., "k$"), as.numeric(str_replace(., "k$", ""))*1000, as.numeric(.))))
 
 options(scipen = 999)
 
@@ -144,8 +144,16 @@ To perform your linear regression, you will likely want to summarize your data s
 ```{r}
 #creating summarised data using all years
 countrywise_data <- data|>
+  filter(!is.na(cases), !is.na(spending))|>
   group_by(country)|>
-  summarise(spending = median(spending, na.rm = TRUE), cases = median(cases, na.rm = TRUE))
+  summarise(spending = mean(spending, na.rm = TRUE), cases = mean(cases, na.rm = TRUE))|>
+  filter(cases>1000) #we want to focus on countries where malaria is an active problem
+```
+
+```{r}
+countrywise_data|>
+  ggplot(aes(x=spending, y=cases))+
+  geom_point(alpha=0.7)
 ```
 
 ```{r}
