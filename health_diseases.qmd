@@ -119,7 +119,7 @@ Remember: your response variable should be on the y-axis and your explanatory va
 ```{r}
 
 ggplot(data, aes(x = spending, y = cases)) +
-  geom_point() +
+  geom_point(alpha=0.2) +
   labs(x = "Healthcare Spending", y = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases")
 
@@ -129,7 +129,7 @@ ggplot(data, aes(x = spending, y = cases)) +
 ```{r}
 
 ggplot(data, aes(x = year, y = cases, size = spending)) +
-  geom_point() +
+  geom_jitter(alpha=0.3, width=0.15) +
   labs(x = "Year", y = "Malaria Cases", size = "Healthcare Spending") +
   ggtitle("Malaria Cases with Healthcare Spending over Time") +
   scale_size_continuous(name = "Healthcare Spending")
@@ -142,8 +142,17 @@ Fit a simple linear regression model for the relationship between the variables 
 To perform your linear regression, you will likely want to summarize your data so you have one x value and one y value per country. You may do this by averaging (or taking the median) across all years, averaging across a subset of years, or picking a year of particular interest. Make sure you discuss your decision in your written report.
 
 ```{r}
-
+#creating summarised data using all years
+countrywise_data <- data|>
+  group_by(country)|>
+  summarise(spending = median(spending, na.rm = TRUE), cases = median(cases, na.rm = TRUE))
 ```
+
+```{r}
+model <- lm(spending ~ cases, data=countrywise_data)
+summary(model)
+```
+
 
 2.3 Model Fit
 
