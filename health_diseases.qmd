@@ -193,3 +193,38 @@ variance_table |>
   kable_styling()
 
 ```
+
+```{r}
+r_squared <- summary(model)$r.squared
+
+```
+
+The R squared value is 0.155, which is not ideal for a linear regression model, suggesting that it is not a good fit for the data that we have currently. This is also indicated by the table displayed, as the response variance is incredibly high, as well as the residual variance, which is high considering the ranges that are ideal. This suggests that the model is not of good quality. We'd either have to fit the data with a different model, possibly a logarithimic one, or get more data to properly fit a model. 
+
+Written Components: 
+
+Present and discuss visualizations of the relationship between the variables.
+
+By both the vizualations, we can see that as government spending towards healthcare increases, malaria cases decrease. It's not really a linear model as the vizualations show, but there is a downward relationship between the government spending and malaria cases. 
+
+Describe the statistical method used – linear regression.
+
+We used linear regression on this model. Linear regression is a statistical modeling technique used to establish a relationship between a dependent variable and one or more independent variables. It assumes a linear relationship, allowing predictions or estimations of the dependent variable based on the values of the independent variables. The goal of linear regression is to find the best-fit line that minimizes the differences between the observed data points and the predicted values
+
+Present the estimated regression model (in notation).
+
+spending = 7.625 + 0.00015584 * cases
+
+Interpret the linear regression coefficients (in context).
+
+The coefficient for the intercept term is 7.625. This represents the estimated average value of the dependent variable (spending) when the independent variable (cases) is zero
+
+The coefficient for the independent variable (cases) is 0.00015584. This coefficient indicates that for every  increase in the number of cases per 100000 people, there is an estimated increase of 0.00015584 percent in the spending variable.
+
+Describe the fit of the regression model (both in table and written format).
+
+As mentioned before, the fit of the regression model is not quite the best for the given data provided. To get a better fit and more accurate results, we'd have to get more data/ re examine the way we are filtering out the data currently, or try a different model to fit the data on. 
+
+
+
+
