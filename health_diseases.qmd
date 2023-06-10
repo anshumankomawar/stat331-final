@@ -126,6 +126,21 @@ ggplot(data, aes(x = spending, y = cases)) +
 
 
 ```
+```{r}
+filtered_data <- data|>
+  filter(!is.na(cases), !is.na(spending))|>
+  group_by(country)|>
+  summarise(spending = mean(spending, na.rm = TRUE), cases = mean(cases, na.rm = TRUE)) |> filter(cases > 1000)
+
+```
+
+```{r}
+ggplot(filtered_data, aes(x = spending, y = cases)) +
+  geom_point(alpha=0.2) +
+  labs(x = "Healthcare Spending", y = "Malaria Cases") +
+  ggtitle("Relationship between Healthcare Spending and Malaria Cases")
+```
+
 
 ```{r}
 
@@ -134,6 +149,8 @@ ggplot(data, aes(x = year, y = cases, size = spending)) +
   labs(x = "Year", y = "Malaria Cases", size = "Healthcare Spending") +
   ggtitle("Malaria Cases with Healthcare Spending over Time") +
   scale_size_continuous(name = "Healthcare Spending")
+
+
 ```
 
 2.2 Linear Regressions
@@ -141,14 +158,13 @@ ggplot(data, aes(x = year, y = cases, size = spending)) +
 Fit a simple linear regression model for the relationship between the variables you selected. Similar to your visualization, you will need to define which variable is the response (y) and which variable is the explanatory (x). Present the estimated regression model and provide an interpretation for each of the coefficients.
 
 To perform your linear regression, you will likely want to summarize your data so you have one x value and one y value per country. You may do this by averaging (or taking the median) across all years, averaging across a subset of years, or picking a year of particular interest. Make sure you discuss your decision in your written report.
-
+ 
 ```{r}
 #creating summarised data using all years
 countrywise_data <- data|>
   filter(!is.na(cases), !is.na(spending))|>
   group_by(country)|>
-  summarise(spending = mean(spending, na.rm = TRUE), cases = mean(cases, na.rm = TRUE))|>
-  filter(cases>1000) #we want to focus on countries where malaria is an active problem
+  summarise(spending = mean(spending, na.rm = TRUE), cases = mean(cases, na.rm = TRUE)) |> filter(cases > 1000)
 ```
 
 ```{r}
@@ -177,7 +193,7 @@ The variance in the residuals from your regression model.
 Discuss the proportion of the variability in the response values that was accounted for by your regression model. What does this suggest about the “quality” of your model?
 
 ```{r}
-response_variance <- var(countrywise_data$cases)
+response_variance <- var(countrywise_data$spending)
 fitted_values <- predict(model)
 fitted_values_variance <- var(fitted_values)
 residuals <- residuals(model)
@@ -225,6 +241,50 @@ Describe the fit of the regression model (both in table and written format).
 
 As mentioned before, the fit of the regression model is not quite the best for the given data provided. To get a better fit and more accurate results, we'd have to get more data/ re examine the way we are filtering out the data currently, or try a different model to fit the data on. 
 
+3.1 Visualizing Simulations from the Model
 
+With your simple linear regression, generate predictions using the predict() function. Then, add random errors to the predictions, using the residual standard error estimated from the linear regression model (acquired with sigma()).
+
+Compare the simulated observations to the observed data. Generate the same plot that you made for 2.1 Data Visualizations #1, but with the simulated data.
+
+Plot the visualization of the observed data and the simulated data side-by-side.
+Discuss how the simulated data are similar and / or different to the observed data.
+
+```{r}
+
+
+predicted_values <- predict(model)
+
+sigma_value <- sigma(model)
+
+
+residuals_sd <- sqrt(residuals_variance)
+
+
+simulated_values <- predicted_values + rnorm(length(predicted_values), mean = 0, sd = sigma_value)
+
+
+simulated_data <- data.frame(spending = simulated_values, cases = countrywise_data$cases)
+
+
+
+
+```
+
+```{r}
+
+ggplot(filtered_data, aes(x = spending, y = cases)) +
+  geom_point(alpha=0.2) +
+  labs(x = "Healthcare Spending", y = "Malaria Cases") +
+  ggtitle("Relationship between Healthcare Spending and Malaria Cases")
+
+
+ggplot(simulated_data, aes(x = spending, y = cases)) +
+  geom_point(alpha=0.2) +
+  labs(x = "Healthcare Spending", y = "Malaria Cases") +
+  ggtitle("Relationship between Healthcare Spending and Malaria Cases (Simulated)")
+
+
+```
 
 
