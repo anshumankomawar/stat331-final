@@ -119,9 +119,9 @@ Remember: your response variable should be on the y-axis and your explanatory va
 
 ```{r}
 
-ggplot(data, aes(x = spending, y = cases)) +
+ggplot(data, aes(y = spending, x = cases)) +
   geom_point(alpha=0.2) +
-  labs(x = "Healthcare Spending", y = "Malaria Cases") +
+  labs(y = "Healthcare Spending", x = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases")
 
 
@@ -135,9 +135,9 @@ filtered_data <- data|>
 ```
 
 ```{r}
-ggplot(filtered_data, aes(x = spending, y = cases)) +
+ggplot(filtered_data, aes(y = spending, x = cases)) +
   geom_point(alpha=0.2) +
-  labs(x = "Healthcare Spending", y = "Malaria Cases") +
+  labs(y = "Healthcare Spending", x = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases")
 ```
 
@@ -169,7 +169,8 @@ countrywise_data <- data|>
 
 ```{r}
 countrywise_data|>
-  ggplot(aes(x=spending, y=cases))+
+  ggplot(aes(y=spending, x=cases))+
+  geom_smooth(method="lm")+
   geom_point(alpha=0.7)
 ```
 
@@ -260,7 +261,7 @@ sigma_value <- sigma(model)
 
 residuals_sd <- sqrt(residuals_variance)
 
-
+set.seed(6548658) #produces consistent output for 3.1
 simulated_values <- predicted_values + rnorm(length(predicted_values), mean = 0, sd = sigma_value)
 
 
@@ -272,19 +273,15 @@ simulated_data <- data.frame(spending = simulated_values, cases = countrywise_da
 ```
 
 ```{r}
-
-ggplot(filtered_data, aes(x = spending, y = cases)) +
+ggplot(filtered_data, aes(y = spending, x = cases)) +
   geom_point(alpha=0.2) +
-  labs(x = "Healthcare Spending", y = "Malaria Cases") +
+  labs(y = "Healthcare Spending", x = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases")
-
-
-ggplot(simulated_data, aes(x = spending, y = cases)) +
-  geom_point(alpha=0.2) +
-  labs(x = "Healthcare Spending", y = "Malaria Cases") +
-  ggtitle("Relationship between Healthcare Spending and Malaria Cases (Simulated)")
-
-
 ```
 
-
+```{r}
+ggplot(simulated_data, aes(y = spending, x = cases)) +
+  geom_point(alpha=0.2) +
+  labs(y = "Healthcare Spending", x = "Malaria Cases") +
+  ggtitle("Relationship between Healthcare Spending and Malaria Cases (Simulated)")
+```
