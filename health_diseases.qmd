@@ -19,14 +19,14 @@ library(tidyverse)
 library(kableExtra)
 ```
 
-Reading in data
+# Reading in data
 ```{r}
 healthcare_expenditure = read.csv("government_health_spending_of_total_gov_spending_percent.csv")
 malaria_cases = read.csv("malaria_cases_per_100000_reported.csv")
 
 ```
 
-1.1 Data Cleaning
+## 1.1 Data Cleaning
 
 Perform data cleaning as you see fit, making sure that you document each step you perform.
 
@@ -47,7 +47,7 @@ Documentation: https://cran.r-project.org/web/packages/Tplyr/vignettes/options.h
 
 For the healthcare expenditure, we didn't have to clean the data. 
 
-1.2 Pivoting Longer
+## 1.2 Pivoting Longer
 
 The values of year are spread across multiple columns. For your analysis, you will need to pivot these columns to be in a single column.
 
@@ -71,7 +71,7 @@ healthcare_expenditure <- healthcare_expenditure |>
 
 ```
 
-1.3 Joining Datasets
+## 1.3 Joining Datasets
 
 To have both of the variables in the same dataset, you will need to perform a join. The type of join is up to you, but keep in mind that the default in ggplot() and in lm() is to drop all of the NA values before plotting or fitting a regression model.
 
@@ -107,9 +107,9 @@ For the malaria dataset, we did have to clean up the cases varibale, as some wer
 Apart from that, we did not clean the data too much, as we are only focusing on and looking at the cases and spending variables, which we joined into one dataset. 
 
 
-Linear Regression
+# Linear Regression
 
-2.1 Data Vizualations
+## 2.1 Data Vizualations
 
 Create two visualizations exploring the following:
 
@@ -153,7 +153,7 @@ ggplot(data, aes(x = year, y = cases, size = spending)) +
 
 ```
 
-2.2 Linear Regressions
+## 2.2 Linear Regressions
 
 Fit a simple linear regression model for the relationship between the variables you selected. Similar to your visualization, you will need to define which variable is the response (y) and which variable is the explanatory (x). Present the estimated regression model and provide an interpretation for each of the coefficients.
 
@@ -179,8 +179,7 @@ model <- lm(spending ~ cases, data=countrywise_data)
 summary(model)
 ```
 
-
-2.3 Model Fit
+## 2.3 Model Fit
 
 The goal of regression is to account for as much variability in the response values as we can. To assess how “good” of a regression model you have, look at how much of the variability in the response was accounted for by your regression.
 
@@ -229,9 +228,9 @@ Describe the statistical method used – linear regression.
 We used linear regression on this model. Linear regression is a statistical modeling technique used to establish a relationship between a dependent variable and one or more independent variables. It assumes a linear relationship, allowing predictions or estimations of the dependent variable based on the values of the independent variables. The goal of linear regression is to find the best-fit line that minimizes the differences between the observed data points and the predicted values
 
 Present the estimated regression model (in notation).
-
+:::callout-equation
 spending = 7.625 + 0.00015584 * cases
-
+:::
 Interpret the linear regression coefficients (in context).
 
 The coefficient for the intercept term is 7.625. This represents the estimated average value of the dependent variable (spending) when the independent variable (cases) is zero
@@ -242,7 +241,9 @@ Describe the fit of the regression model (both in table and written format).
 
 As mentioned before, the fit of the regression model is not quite the best for the given data provided. To get a better fit and more accurate results, we'd have to get more data/ re examine the way we are filtering out the data currently, or try a different model to fit the data on. 
 
-3.1 Visualizing Simulations from the Model
+# Simulation
+
+## 3.1 Visualizing Simulations from the Model
 
 With your simple linear regression, generate predictions using the predict() function. Then, add random errors to the predictions, using the residual standard error estimated from the linear regression model (acquired with sigma()).
 
@@ -285,3 +286,11 @@ ggplot(simulated_data, aes(y = spending, x = cases)) +
   labs(y = "Healthcare Spending", x = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases (Simulated)")
 ```
+
+## 3.2 Generating Multiple Predictive Checks
+
+Generate at least 1000 simulated datasets that could have been observed if your regression model adequately describes the relationship between the response and explanatory variables.
+
+Regress the observed dataset against each simulated dataset (e.g. lm(observed ~ simulated)), and keep the R2 from each regression. Keep in mind that lm() discards any observations with missing values (NA) for any of the variables included in your model. Therefore, you will need to remove these observations before joining with the observed data.
+
+Plot the distribution of the R2 values from the regressions. Discuss the implications of the values shown in this plot. How well does your model generate data similar to what was observed?
