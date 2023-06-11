@@ -9,7 +9,7 @@ toc: true
 editor: source
 execute: 
   error: true
-  echo: true
+  echo: false
   message: false
   warning: false
 ---
@@ -175,7 +175,7 @@ countrywise_data|>
 ```
 
 ```{r}
-model <- lm(spending ~ cases, data=countrywise_data)
+model <- lm(cases ~ spending, data=countrywise_data)
 summary(model)
 ```
 
@@ -275,14 +275,14 @@ simulated_data <- data.frame(spending = simulated_values, cases = countrywise_da
 
 ```{r}
 ggplot(filtered_data, aes(y = spending, x = cases)) +
-  geom_point(alpha=0.2) +
+  geom_point(alpha=0.4) +
   labs(y = "Healthcare Spending", x = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases")
 ```
 
 ```{r}
 ggplot(simulated_data, aes(y = spending, x = cases)) +
-  geom_point(alpha=0.2) +
+  geom_point(alpha=0.4) +
   labs(y = "Healthcare Spending", x = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases (Simulated)")
 ```
@@ -294,3 +294,31 @@ Generate at least 1000 simulated datasets that could have been observed if your 
 Regress the observed dataset against each simulated dataset (e.g. lm(observed ~ simulated)), and keep the R2 from each regression. Keep in mind that lm() discards any observations with missing values (NA) for any of the variables included in your model. Therefore, you will need to remove these observations before joining with the observed data.
 
 Plot the distribution of the R2 values from the regressions. Discuss the implications of the values shown in this plot. How well does your model generate data similar to what was observed?
+
+```{r}
+# simulate data as in 3.1
+simulate_set <- function() {
+  predicted_values + rnorm(
+    length(predicted_values),
+    mean = 0,
+    sd = sigma_value)
+}
+
+#create model
+simulated_model <- function() {
+  lm(countrywise_data$cases ~ simulate_set())
+}
+
+#divine R2
+randomized_r_squared <- function() {
+  summary(simulated_model())$r.squared
+}
+```
+
+```{r}
+large_sim <- replicate(1000,
+                       expr = randomized_r_squared(),
+                       simplify = "vector"
+                       )
+```
+
