@@ -322,3 +322,14 @@ large_sim <- replicate(1000,
                        )
 ```
 
+Below is the output graph. The vertical line is our R squared.
+
+```{r}
+data.frame(ls = large_sim)|>
+  ggplot(aes(x=ls))+
+  geom_histogram()+
+  geom_vline(xintercept=r_squared)+
+  labs(title="Distribution of R2",
+       x="R2", y="n")
+```
+
