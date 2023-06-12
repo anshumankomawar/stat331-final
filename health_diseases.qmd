@@ -310,6 +310,7 @@ large_sim <- replicate(1000,
 These are the distribution of the R2 values from the regressions. The vertical line is our R squared.
 
 ```{r}
+str(large_sim)
 data.frame(ls = large_sim)|>
   ggplot(aes(x=ls))+
   geom_histogram()+
@@ -317,6 +318,31 @@ data.frame(ls = large_sim)|>
   labs(title="Distribution of R2",
        x="R2", y="n")
 ```
+```{r}
+library(gganimate)
+library(magick)
+
+large_sim <- rnorm(1000)
+
+large_sim_df <- data.frame(ls = rep(large_sim, 10), 
+                           time = rep(1:10, each = 1000))
+
+r_squared <- median(large_sim_df$ls)
+
+anim <- large_sim_df %>%
+  ggplot(aes(x = ls)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "#69b3a2", alpha = 0.7, color = "#e9ecef", size = 0.1) +
+  geom_vline(aes(xintercept = r_squared)) +
+  labs(title = "Distribution of R2", x = "R2", y = "n") +
+  transition_time(time) +
+  ease_aes('linear')
+
+animated_plot <- animate(anim, renderer = magick_renderer())
+
+image_write(animated_plot, path = "animation.gif")
+
+```
+
 As shown in the values of our plot, the R2 values are relatively low, as reflective in our original predictions. The values range from 0 to 0.5, where most of the values lie in the range from 0.1-0.3. Given that higher R2 values are a reflection how well a model fits, we can safely say that there is not a strong linear relationship between Malaria cases and government spending on healthcare. The model on the generated data was similar to what was observed in our original data, which does not show a clear linear relationship between the two values. 
 
 ## Conclusion
