@@ -1,6 +1,6 @@
 ---
-title: "Health care expenditure and disease prevelance"
-subtitle: "Data cleaning, Part 1 of Project"
+title: "Health Care Expenditure And Disease Prevelance"
+subtitle: "Stats 331 Final Project Report"
 author: "Tarini Srikanth, Anshuman Komawar, Garret Ravatt"
 format: html
 self-contained: true
@@ -17,20 +17,50 @@ execute:
 ```{r setup}
 library(tidyverse)
 library(kableExtra)
+library(gridExtra)
+
 ```
 
-# Reading in data
 ```{r}
 healthcare_expenditure = read.csv("government_health_spending_of_total_gov_spending_percent.csv")
 malaria_cases = read.csv("malaria_cases_per_100000_reported.csv")
 
 ```
 
-## 1.1 Data Cleaning
+In the realm of public health, understanding the complex dynamics between disease prevalence and government spending on healthcare is crucial for effective policy-making and resource allocation. One such area of investigation is the relationship between Malaria prevalence and government expenditure on healthcare. Our analysis focuses on exploring the relationship between Malaria prevalence and government expenditure on healthcare through statistical analysis, visualizations, and predictions.
 
-Perform data cleaning as you see fit, making sure that you document each step you perform.
+## Exploring the data
 
-Step 1.2 asks you to pivot your data; it is possible that you will need to perform some data cleaning before pivoting! For example, if some incomes are recorded as 3.6 while others are recorded as "1.1k", R will not allow you to pivot your columns since these columns do not have the same data type! You will need to convert the value of "1.1k" into a number before pivoting.
+Our data was collected from GapMinder, https://www.gapminder.org/,  'an independent educational non-proﬁt ﬁghting global misconceptions.' that provides useful data on a vareity of variables. 
+
+We have two datasets we are working with, listed below. 
+
+**Malaria Dataset:**
+Malaria cases per 100,000 residents that are reported. 
+Data: Country (the country pertaining to the cases), Year (the year the cases were reported in), Cases (reported malaria cases per 100,000 people)
+
+**Healthcare Expenditure:**
+Government health spending of total government spending percentage. 
+Data: Country(the country pertaining to the spending percentage), Year( the year the spending percentages are from), spending (the percentage of total government spending dedicated to health care)
+
+**Our Hypothesis**
+
+With more government dedication and spending towards healthcare, diseases prevalence would decrease. We are focusing specifically on Malaria as the disease, and we believe that with more government dedication towards healthcare, cases of Malaria should decrease, as treatments and cures would benefit from extra government spending, and diseases would be eradicated faster. 
+
+
+## Data Cleaning and organization
+
+For the healthcare expenditure dataset, we did not have to clean up the data, as all the data was present as numbers that represented percentages  of government spending. 
+
+For the malaria dataset, we did have to clean up the cases variable, as some were in string formats which we then had to convert to number representations. For example, 1k was translated into 1000. 
+
+The values of year are spread across multiple columns for both the datasets. For our analysis, we pivoting these tables to be longer to have year be in a single column. 
+
+Apart from that, we did not clean the data too much, as we are only focusing on and looking at the cases and spending variables, which we joined into one dataset. Since both datasets contain the country and year columns, we performed an inner join on the data, dropping NA values. 
+
+For the Malaria Cases, 
+We had to use the 'options' package in R to convert it string formatted numbers like 1.1k to 1100.00. 
+Documentation: https://cran.r-project.org/web/packages/Tplyr/vignettes/options.html
 
 ```{r}
 
@@ -40,16 +70,6 @@ malaria_cases <- malaria_cases |>
 options(scipen = 999)
 
 ```
-
-For the Malaria Cases, 
-We had to use the 'options' package in R to convert it string formatted numbers like 1.1k to 1100.00. 
-Documentation: https://cran.r-project.org/web/packages/Tplyr/vignettes/options.html
-
-For the healthcare expenditure, we didn't have to clean the data. 
-
-## 1.2 Pivoting Longer
-
-The values of year are spread across multiple columns. For your analysis, you will need to pivot these columns to be in a single column.
 
 ```{r}
 
@@ -71,93 +91,64 @@ healthcare_expenditure <- healthcare_expenditure |>
 
 ```
 
-## 1.3 Joining Datasets
-
-To have both of the variables in the same dataset, you will need to perform a join. The type of join is up to you, but keep in mind that the default in ggplot() and in lm() is to drop all of the NA values before plotting or fitting a regression model.
-
 ```{r}
 # 137 entries contain NA values
 data <- healthcare_expenditure |>
   inner_join(malaria_cases)
 ```
+## Data Visualizations
 
-
-Written Components:
-Detailed data and variable description.
-
-Malaria Dataset:
-Malaria cases per 100,000 residents that are reported. 
-Data: Country (the country pertaining to the cases), Year (the year the cases were reported in), Cases (reported malaria cases per 100,000 people)
-
-Healthcare Expenditure:
-Government health spending of total government spending percentage. 
-Data: Country(the country pertaining to the spending percentage), Year( the year the spending percentages are from), spending (the percentage of total government spending dedicated to health care)
-
-
-Hypothesized relationship between the variables (and any outside references).
-
-Our hypothesis is that with more government dedication and spending towards healthcare, diseases prevelance would decrease. We are focusing specifically on Malaria as the disease, and we believe that with more government dedication towards healthcare, cases of Malaria should decrease, as treatements and cures would benefit from extra government spending, and diseases would be eradicated faster. 
-
-Discussion of data cleaning process and decisions.
-
-For the healthcare expenditure dataset, we did not have to clean up the data, as all the data was present as numbers that represented percentages  of government spending. 
-
-For the malaria dataset, we did have to clean up the cases varibale, as some were in string formats which we then had to convert to number representations. 
-
-Apart from that, we did not clean the data too much, as we are only focusing on and looking at the cases and spending variables, which we joined into one dataset. 
-
-
-# Linear Regression
-
-## 2.1 Data Vizualations
-
-Create two visualizations exploring the following:
-
-1. The relationship between the two quantitative variables you are investigating.
-Remember: your response variable should be on the y-axis and your explanatory variable should be on the x-axis.
-2. How this relationship (from #1) has changed over time.
+Relationship between Malaria prevelance and government expenditure on healthcare
 
 ```{r}
-
 ggplot(data, aes(y = spending, x = cases)) +
   geom_point(alpha=0.2) +
   labs(y = "Healthcare Spending", x = "Malaria Cases") +
   ggtitle("Relationship between Healthcare Spending and Malaria Cases")
 
-
-```
-```{r}
-filtered_data <- data|>
-  filter(!is.na(cases), !is.na(spending))|>
-  group_by(country)|>
-  summarise(spending = mean(spending, na.rm = TRUE), cases = mean(cases, na.rm = TRUE)) |> filter(cases > 1000)
-
 ```
 
-```{r}
-ggplot(filtered_data, aes(y = spending, x = cases)) +
-  geom_point(alpha=0.2) +
-  labs(y = "Healthcare Spending", x = "Malaria Cases") +
-  ggtitle("Relationship between Healthcare Spending and Malaria Cases")
-```
-
+How this relationship has changed over time
 
 ```{r}
-
 ggplot(data, aes(x = year, y = cases, size = spending)) +
   geom_jitter(alpha=0.3, width=0.15) +
   labs(x = "Year", y = "Malaria Cases", size = "Healthcare Spending") +
   ggtitle("Malaria Cases with Healthcare Spending over Time") +
   scale_size_continuous(name = "Healthcare Spending")
 
+```
+
+By both the visualizations, we can see that as government spending towards healthcare increases, malaria cases decrease. It's not a clear a linear model as the plot show, but there may be a inverse relationship between malaria cases to government spending. 
+
+We wanted to focus our area of statistical analysis on countries where the disease prevalence of Malaria was already high to begin with. A lot of countries don't have a large enough Malaria prevalence for it to be considered dangerous, but still have a lot of government expenditure on healthcare, going towards other areas, which may lead to different conclusions. 
+
+To focus on countries with a higher Malaria prevalence, we filtered our data to include only countries whose average cases over all the years was greater than 1000, per 100,000 residents. 
+
+```{r}
+filtered_data <- data |>
+  filter(!is.na(cases), !is.na(spending)) |>
+  group_by(country) |>
+  filter(mean(cases, na.rm = TRUE) > 1000)
 
 ```
 
-## 2.2 Linear Regressions
 
-Fit a simple linear regression model for the relationship between the variables you selected. Similar to your visualization, you will need to define which variable is the response (y) and which variable is the explanatory (x). Present the estimated regression model and provide an interpretation for each of the coefficients.
+```{r}
 
-To perform your linear regression, you will likely want to summarize your data so you have one x value and one y value per country. You may do this by averaging (or taking the median) across all years, averaging across a subset of years, or picking a year of particular interest. Make sure you discuss your decision in your written report.
+ggplot(filtered_data, aes(y = spending, x = cases)) +
+  geom_point(alpha=0.2) +
+  labs(y = "Healthcare Spending", x = "Malaria Cases") +
+  ggtitle("Relationship between Healthcare Spending and Malaria Cases (Filtered)")
+
+```
+As seen by this plot, there is no clear indication as to whether or not malaria cases are impacted by government expenditure on healthcare. 
+
+## Linear Regression
+
+We fit a simple linear regression model for the relationship between the variables we selected.Our response variable is government spending on healthcare, based on our explanatory variable, Malaria disease prevalence. 
+
+To perform our linear regression, we summarized our data to have one x value and one y value per country. We did this by taking the average cases across all years.
  
 ```{r}
 #creating summarised data using all years
@@ -167,30 +158,23 @@ countrywise_data <- data|>
   summarise(spending = mean(spending, na.rm = TRUE), cases = mean(cases, na.rm = TRUE)) |> filter(cases > 1000)
 ```
 
+This Plot shows the relationship between Healthcare Spending and Average Malaria Cases over all the years.
 ```{r}
 countrywise_data|>
   ggplot(aes(y=spending, x=cases))+
   geom_smooth(method="lm")+
-  geom_point(alpha=0.7)
+  geom_point(alpha=0.7)+
+  labs(y = "Healthcare Spending", x = "Malaria Cases") +
+  ggtitle("Relationship between Healthcare Spending and Average Malaria Cases Over Years")
 ```
+
+Based on the spending as the response, and the cases as the explanatory, we fit a simple linear regression model. 
 
 ```{r}
-model <- lm(cases ~ spending, data=countrywise_data)
+model <- lm(spending ~cases, data=countrywise_data)
 summary(model)
 ```
-
-## 2.3 Model Fit
-
-The goal of regression is to account for as much variability in the response values as we can. To assess how “good” of a regression model you have, look at how much of the variability in the response was accounted for by your regression.
-
- The variance in your fitted values represents the amount of variability in the response that was accounted for by the explanatory variable. The variance in the residuals represents the amount of variability in the responses that was not accounted for.
-
-Make a nicely formatted table that presents the following:
-
-The variance in the response values.
-The variance in the fitted values from your regression model.
-The variance in the residuals from your regression model.
-Discuss the proportion of the variability in the response values that was accounted for by your regression model. What does this suggest about the “quality” of your model?
+We then calcualted the variance for the response, fitted, and residual values. 
 
 ```{r}
 response_variance <- var(countrywise_data$spending)
@@ -215,42 +199,31 @@ r_squared <- summary(model)$r.squared
 
 ```
 
-The R squared value is 0.155, which is not ideal for a linear regression model, suggesting that it is not a good fit for the data that we have currently. This is also indicated by the table displayed, as the response variance is incredibly high, as well as the residual variance, which is high considering the ranges that are ideal. This suggests that the model is not of good quality. We'd either have to fit the data with a different model, possibly a logarithimic one, or get more data to properly fit a model. 
+**The estimated regression model**
 
-Written Components: 
-
-Present and discuss visualizations of the relationship between the variables.
-
-By both the vizualations, we can see that as government spending towards healthcare increases, malaria cases decrease. It's not really a linear model as the vizualations show, but there is a downward relationship between the government spending and malaria cases. 
-
-Describe the statistical method used – linear regression.
-
-We used linear regression on this model. Linear regression is a statistical modeling technique used to establish a relationship between a dependent variable and one or more independent variables. It assumes a linear relationship, allowing predictions or estimations of the dependent variable based on the values of the independent variables. The goal of linear regression is to find the best-fit line that minimizes the differences between the observed data points and the predicted values
-
-Present the estimated regression model (in notation).
-:::callout-equation
 spending = 7.625 + 0.00015584 * cases
-:::
-Interpret the linear regression coefficients (in context).
 
-The coefficient for the intercept term is 7.625. This represents the estimated average value of the dependent variable (spending) when the independent variable (cases) is zero
+**The linear regression coefficients. **
+
+The coefficient for the intercept term is 7.625. This represents the estimated average value of the dependent variable (spending) when the independent variable (cases) is zero. 
 
 The coefficient for the independent variable (cases) is 0.00015584. This coefficient indicates that for every  increase in the number of cases per 100000 people, there is an estimated increase of 0.00015584 percent in the spending variable.
 
-Describe the fit of the regression model (both in table and written format).
+**Analysis of the model fit**
 
-As mentioned before, the fit of the regression model is not quite the best for the given data provided. To get a better fit and more accurate results, we'd have to get more data/ re examine the way we are filtering out the data currently, or try a different model to fit the data on. 
+We used linear regression on this model. Linear regression is a statistical modeling technique used to establish a relationship between a dependent variable and one or more independent variables. It assumes a linear relationship, allowing predictions or estimations of the dependent variable based on the values of the independent variables. The goal of linear regression is to find the best-fit line that minimizes the differences between the observed data points and the predicted values
 
-# Simulation
+The R squared value is 0.155, which is not ideal for a linear regression model, suggesting that it is not a good fit for the data that we have currently. This is also indicated by the table displayed, as the response variance is relatively high, as well as the residual variance. This suggests that the data we have currently does not fit in well into a linear regression model. 
 
-## 3.1 Visualizing Simulations from the Model
+As mentioned before, the fit of the regression model is not quite the best for the given data provided. To get a better fit and more accurate results, we'd have to get more data/ re examine the way we are filtering out the data currently, or try a different model to fit the data on. It could also be the case that Malaria prevelance in these countries and government expenditure on healthcare do not have a linear relationship. 
 
-With your simple linear regression, generate predictions using the predict() function. Then, add random errors to the predictions, using the residual standard error estimated from the linear regression model (acquired with sigma()).
+
+## Visualizing Simulations from the Model
+
+With our simple linear regression, we generated predictions using the predict() function. We then added random errors to the predictions, using the residual standard error estimated from the linear regression model (acquired with sigma()).
 
 Compare the simulated observations to the observed data. Generate the same plot that you made for 2.1 Data Visualizations #1, but with the simulated data.
 
-Plot the visualization of the observed data and the simulated data side-by-side.
-Discuss how the simulated data are similar and / or different to the observed data.
 
 ```{r}
 
@@ -273,30 +246,42 @@ simulated_data <- data.frame(spending = simulated_values, cases = countrywise_da
 
 ```
 
+Here is the plot of the visualization of the observed data and the simulated data side-by-side.
+
+
+
 ```{r}
-ggplot(filtered_data, aes(y = spending, x = cases)) +
+
+filtered_data <- data|>
+  filter(!is.na(cases), !is.na(spending))|>
+  group_by(country)|>
+  summarise(spending = mean(spending, na.rm = TRUE), cases = mean(cases, na.rm = TRUE)) |> filter(cases > 1000)
+
+plot1 <- ggplot(filtered_data, aes(y = spending, x = cases)) +
   geom_point(alpha=0.4) +
   labs(y = "Healthcare Spending", x = "Malaria Cases") +
-  ggtitle("Relationship between Healthcare Spending and Malaria Cases")
-```
+  ggtitle("Spending vs Malaria Cases")+
+ theme(plot.title = element_text(margin = margin(b = 20)))  
 
-```{r}
-ggplot(simulated_data, aes(y = spending, x = cases)) +
+plot2 <- ggplot(simulated_data, aes(y = spending, x = cases)) +
   geom_point(alpha=0.4) +
   labs(y = "Healthcare Spending", x = "Malaria Cases") +
-  ggtitle("Relationship between Healthcare Spending and Malaria Cases (Simulated)")
+  ggtitle("Spending vs Malaria Cases(Simualted)")
+
+grid.arrange(plot1, plot2, ncol = 2)
+
 ```
+The simulated data compared to the original data is pretty accurate. By looking at these two plots, we can see that the model did a good job predicting what the healthcare spending would be given the malaria cases. Overall, the numbers for government spending are slighlty higher than the original, but the trajectory that the data follows seems to be close to the original trajectory. Again, it does not show a linear relationship, so it is inconclusive as to whether or not there is a linear relationship between Malaria cases and government spending on healthcare. 
 
-## 3.2 Generating Multiple Predictive Checks
+## Generating Multiple Predictive Checks
 
-Generate at least 1000 simulated datasets that could have been observed if your regression model adequately describes the relationship between the response and explanatory variables.
+We generated 1000 simulated datasets that could have been observed if our regression model adequately describes the relationship between the response and explanatory variables.
 
-Regress the observed dataset against each simulated dataset (e.g. lm(observed ~ simulated)), and keep the R2 from each regression. Keep in mind that lm() discards any observations with missing values (NA) for any of the variables included in your model. Therefore, you will need to remove these observations before joining with the observed data.
+We regressed the observed dataset against each simulated dataset (e.g. lm(observed ~ simulated)), and kept the R2 from each regression.
 
-Plot the distribution of the R2 values from the regressions. Discuss the implications of the values shown in this plot. How well does your model generate data similar to what was observed?
 
 ```{r}
-# simulate data as in 3.1
+# simulate data as previously
 simulate_set <- function() {
   predicted_values + rnorm(
     length(predicted_values),
@@ -322,7 +307,7 @@ large_sim <- replicate(1000,
                        )
 ```
 
-Below is the output graph. The vertical line is our R squared.
+These are the distribution of the R2 values from the regressions. The vertical line is our R squared.
 
 ```{r}
 data.frame(ls = large_sim)|>
@@ -332,4 +317,11 @@ data.frame(ls = large_sim)|>
   labs(title="Distribution of R2",
        x="R2", y="n")
 ```
+As shown in the values of our plot, the R2 values are relatively low, as reflective in our original predictions. The values range from 0 to 0.5, where most of the values lie in the range from 0.1-0.3. Given that higher R2 values are a reflection how well a model fits, we can safely say that there is not a strong linear relationship between Malaria cases and government spending on healthcare. The model on the generated data was similar to what was observed in our original data, which does not show a clear linear relationship between the two values. 
+
+## Conclusion
+
+Going back to our hypothesis, which was if malaria cases were less prevalent, that would indicate there is an increase in government spending towards healthcare, our hypothesis was not proven by the data we statistically analyzed. As shown by this analysis, a linear regression model was not the right fit for our data, and there did not seem to be a linear relationship between the two variables. This could be for a number of reasons, mainly that the government spending on healthcare was just an averaged number. We did not have indications as to where that money was being used inside the healthcare sector, and whether it was going towards disease reduction like Malaria. It could also just be that no matter how much government spending there is on healthcare, Malaria disease prevalence is also largely related to the population growth, pollution and sanitation levels inside the country, and many other factors that are not shown in government expenditure to healthcare. 
+
+
 
