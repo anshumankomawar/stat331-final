@@ -1,7 +1,7 @@
 ---
 title: "Health Care Expenditure And Disease Prevelance"
 subtitle: "Stats 331 Final Project Report"
-author: "Tarini Srikanth, Anshuman Komawar, Garret Ravatt"
+author: "Tarini Srikanth, Anshuman Komawar, Garrett Ravatt"
 format: html
 self-contained: true
 code-tools: true
