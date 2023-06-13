@@ -318,7 +318,17 @@ data.frame(ls = large_sim)|>
   labs(title="Distribution of R2",
        x="R2", y="n")
 ```
-```{r}
+
+As shown in the values of our plot, the R2 values are relatively low, as reflective in our original predictions. The values range from 0 to 0.5, where most of the values lie in the range from 0.1-0.3. Given that higher R2 values are a reflection how well a model fits, we can safely say that there is not a strong linear relationship between Malaria cases and government spending on healthcare. The model on the generated data was similar to what was observed in our original data, which does not show a clear linear relationship between the two values. 
+
+## Conclusion
+
+Going back to our hypothesis, which was if malaria cases were less prevalent, that would indicate there is an increase in government spending towards healthcare, our hypothesis was not proven by the data we statistically analyzed. As shown by this analysis, a linear regression model was not the right fit for our data, and there did not seem to be a linear relationship between the two variables. This could be for a number of reasons, mainly that the government spending on healthcare was just an averaged number. We did not have indications as to where that money was being used inside the healthcare sector, and whether it was going towards disease reduction like Malaria. It could also just be that no matter how much government spending there is on healthcare, Malaria disease prevalence is also largely related to the population growth, pollution and sanitation levels inside the country, and many other factors that are not shown in government expenditure to healthcare. 
+
+
+## Extra Credit
+
+```{r, echo = TRUE}
 library(gganimate)
 library(magick)
 
@@ -342,12 +352,6 @@ animated_plot <- animate(anim, renderer = magick_renderer())
 image_write(animated_plot, path = "animation.gif")
 
 ```
-
-As shown in the values of our plot, the R2 values are relatively low, as reflective in our original predictions. The values range from 0 to 0.5, where most of the values lie in the range from 0.1-0.3. Given that higher R2 values are a reflection how well a model fits, we can safely say that there is not a strong linear relationship between Malaria cases and government spending on healthcare. The model on the generated data was similar to what was observed in our original data, which does not show a clear linear relationship between the two values. 
-
-## Conclusion
-
-Going back to our hypothesis, which was if malaria cases were less prevalent, that would indicate there is an increase in government spending towards healthcare, our hypothesis was not proven by the data we statistically analyzed. As shown by this analysis, a linear regression model was not the right fit for our data, and there did not seem to be a linear relationship between the two variables. This could be for a number of reasons, mainly that the government spending on healthcare was just an averaged number. We did not have indications as to where that money was being used inside the healthcare sector, and whether it was going towards disease reduction like Malaria. It could also just be that no matter how much government spending there is on healthcare, Malaria disease prevalence is also largely related to the population growth, pollution and sanitation levels inside the country, and many other factors that are not shown in government expenditure to healthcare. 
 
 
 
